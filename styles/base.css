@@ -1,0 +1,126 @@
+:root {
+  --bg: #f5eddf;
+  --bg-soft: #fbf7ef;
+  --surface: rgba(255, 251, 245, 0.92);
+  --surface-strong: #fffaf1;
+  --surface-dark: #2d2319;
+  --line: rgba(122, 84, 47, 0.16);
+  --line-strong: rgba(122, 84, 47, 0.32);
+  --text: #38291c;
+  --text-muted: #6c5946;
+  --accent: #a4542d;
+  --accent-strong: #7b3417;
+  --gold: #d6ae69;
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --shadow-lg: 0 22px 50px rgba(74, 45, 18, 0.14);
+  --shadow-md: 0 12px 28px rgba(74, 45, 18, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255, 238, 204, 0.95), transparent 34%),
+    radial-gradient(circle at top right, rgba(228, 196, 150, 0.45), transparent 28%),
+    linear-gradient(180deg, #f6efe2 0%, #f2e8d9 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 120px 120px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent 94%);
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 13px 22px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button--primary {
+  color: #fff9f1;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  box-shadow: 0 14px 28px rgba(127, 53, 21, 0.2);
+}
+
+.button--ghost {
+  color: var(--accent-strong);
+  background: rgba(255, 249, 241, 0.9);
+  border: 1px solid rgba(165, 83, 43, 0.18);
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%),
+    linear-gradient(315deg, rgba(214, 174, 105, 0.08), transparent 44%);
+}
+
+@media (max-width: 720px) {
+  .button {
+    width: 100%;
+  }
+}

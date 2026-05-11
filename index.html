@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>古筝教学互动软件</title>
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/landing.css" />
+  </head>
+  <body>
+    <main class="landing-shell">
+      <section class="landing-hero">
+        <div class="landing-copy">
+          <div class="landing-badge-row">
+            <span class="landing-badge">本地单机版</span>
+            <span class="landing-badge landing-badge--soft">教学体验原型</span>
+          </div>
+          <p class="eyebrow">Gu Zheng Interactive Teaching</p>
+          <h1>古筝教学互动软件</h1>
+          <p class="landing-summary">
+            用于古筝启蒙课堂、体验课和试听课的教学互动软件。老师进入主界面后，从左侧菜单切换内容模块，在右侧完成讲解、演示和互动操作。
+          </p>
+
+          <section class="entry-card">
+            <div class="entry-card__header">
+              <div>
+                <p class="entry-card__label">启动入口</p>
+                <h2>进入教学主界面</h2>
+              </div>
+              <span class="entry-card__state">Ready</span>
+            </div>
+
+            <div class="entry-card__body">
+              <div class="entry-card__field">
+                <span class="entry-card__field-label">运行模式</span>
+                <strong>本地教学模式</strong>
+                <p>当前先不做账号体系，直接进入软件主控台。</p>
+              </div>
+              <div class="entry-card__field">
+                <span class="entry-card__field-label">当前阶段</span>
+                <strong>界面骨架搭建中</strong>
+                <p>先统一软件样式，再继续逐个完善教学模块功能。</p>
+              </div>
+            </div>
+
+            <div class="landing-actions">
+              <a class="button button--primary" href="./app.html">进入软件</a>
+              <a class="button button--ghost" href="./README.md">查看项目说明</a>
+            </div>
+          </section>
+
+          <ul class="landing-points">
+            <li>首页只负责启动软件，不在一页内堆放所有模块内容</li>
+            <li>主界面采用左侧菜单栏加右侧显示区的正式软件结构</li>
+            <li>互动内容后续从主界面进入，并支持全屏展示</li>
+          </ul>
+        </div>
+        <div class="landing-visual">
+          <div class="visual-panel">
+            <div class="visual-glow"></div>
+            <div class="visual-zither">
+              <span class="visual-body"></span>
+              <span class="visual-string s1"></span>
+              <span class="visual-string s2"></span>
+              <span class="visual-string s3"></span>
+              <span class="visual-string s4"></span>
+              <span class="visual-string s5"></span>
+              <span class="visual-bridge b1"></span>
+              <span class="visual-bridge b2"></span>
+              <span class="visual-bridge b3"></span>
+            </div>
+            <div class="visual-caption">
+              <p>首页示意图</p>
+              <strong>后续可替换为你的正式古筝插画或课堂主视觉</strong>
+            </div>
+          </div>
+          <div class="landing-side-info">
+            <article class="side-info-card">
+              <p>界面方向</p>
+              <strong>先外壳 后功能</strong>
+              <span>先把软件首页、主界面和栏目框架做稳定，再逐个接教学模块。</span>
+            </article>
+            <article class="side-info-card">
+              <p>后续接入</p>
+              <strong>模块独立开发</strong>
+              <span>每个左侧栏目已经拆成独立代码模块，后面增加功能互不影响。</span>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
