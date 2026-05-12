@@ -11,21 +11,30 @@
     <div class="workspace-shell">
       <aside class="workspace-sidebar">
         <div class="sidebar-brand">
-          <h1>古筝教学互动软件</h1>
-          <a class="sidebar-back" href="./index.html">返回首页</a>
+          <h1>筝之道古筝教学互动软件</h1>
         </div>
 
         <nav class="sidebar-nav" id="sidebar-nav" aria-label="教学模块导航"></nav>
+
+        <div class="sidebar-footer">
+          <p>当前模式</p>
+          <strong>本地课堂教学</strong>
+        </div>
       </aside>
 
       <main class="workspace-main">
         <header class="workspace-header">
-          <div>
-            <p class="eyebrow" id="header-eyebrow">Teaching Workspace</p>
+          <div class="workspace-header__copy">
+            <p class="eyebrow" id="header-eyebrow">课堂工作台</p>
             <h2 id="header-title">教学主控台</h2>
             <p class="workspace-header__summary" id="header-summary">从左侧选择教学模块，在右侧完成讲解与互动操作。</p>
           </div>
-          <div class="workspace-header__actions" id="header-actions"></div>
+          <div class="workspace-header__meta">
+            <div class="workspace-header__global-actions">
+              <button class="button button--ghost workspace-return-login" id="return-login">返回登录页</button>
+            </div>
+            <div class="workspace-header__actions" id="header-actions"></div>
+          </div>
         </header>
 
         <section class="workspace-content" id="workspace-content"></section>

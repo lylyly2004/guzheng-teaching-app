@@ -40,7 +40,7 @@ export const structureModule = {
     updateExplodeStage(root, state.modules.structure.activeExplodeStep);
   },
   renderHeaderActions({ root, openOverlay }) {
-    root.innerHTML = `<button class="button button--primary" id="header-open-game">进入互动游戏</button>`;
+    root.insertAdjacentHTML("beforeend", `<button class="button button--primary" id="header-open-game">进入互动游戏</button>`);
     root.querySelector("#header-open-game").addEventListener("click", () => {
       openOverlay(createStructureGameMarkup(), bindStructureGame);
     });
