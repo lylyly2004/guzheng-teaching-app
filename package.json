@@ -1,0 +1,7 @@
+{
+  "name": "guzheng-teaching-app",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "古筝教学互动软件原型"
+}

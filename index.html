@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>古筝教学互动软件</title>
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/landing.css" />
+  </head>
+  <body>
+    <main class="landing-shell">
+      <section class="login-panel">
+        <div class="login-showcase">
+          <div class="landing-badge-row">
+            <span class="landing-badge">古筝互动课堂</span>
+            <span class="landing-badge landing-badge--soft">教学管理端</span>
+          </div>
+          <h1>筝之道古筝教学互动软件</h1>
+          <p class="landing-summary">
+            面向古筝启蒙课堂、试听课和课堂互动场景，帮助老师快速进入教学主控台，完成讲解、演示和互动训练。
+          </p>
+
+          <div class="showcase-visual" aria-hidden="true">
+            <div class="visual-glow"></div>
+            <div class="visual-grid"></div>
+            <div class="visual-image-wrap">
+              <img class="visual-image" src="./assets/images/guzheng-hero.png" alt="古筝示意图" />
+            </div>
+          </div>
+
+          <div class="showcase-footer">
+            <p>课堂培育式教学入口</p>
+            <strong>先统一登录页与主控台风格，后续再扩展授权登录。</strong>
+          </div>
+        </div>
+
+        <div class="login-form-wrap">
+          <div class="login-tabs">
+            <span class="login-tab is-active">用户登录</span>
+          </div>
+
+          <form class="login-form" id="login-form">
+            <label class="field">
+              <span class="field__label">账号</span>
+              <span class="field__frame">
+                <input
+                  class="field__input"
+                  id="login-username"
+                  name="username"
+                  type="text"
+                  autocomplete="username"
+                  value="adimin"
+                  required
+                />
+              </span>
+            </label>
+
+            <label class="field">
+              <span class="field__label">密码</span>
+              <span class="field__frame">
+                <input
+                  class="field__input"
+                  id="login-password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  value="123456"
+                  required
+                />
+              </span>
+            </label>
+
+            <div class="login-row">
+              <label class="remember-line">
+                <input type="checkbox" id="remember-login" checked />
+                <span>记住登录信息</span>
+              </label>
+              <span class="login-hint">测试账号：adimin / 123456</span>
+            </div>
+
+            <p class="login-message" id="login-message" aria-live="polite"></p>
+
+            <div class="landing-actions">
+              <button class="button button--primary login-submit" type="submit">进入软件</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/login.js"></script>
+  </body>
+</html>
