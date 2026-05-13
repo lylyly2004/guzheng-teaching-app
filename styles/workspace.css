@@ -37,80 +37,87 @@
 .workspace-sidebar {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  padding: 24px 16px 16px;
+  padding: 24px 18px 18px;
   background:
-    linear-gradient(180deg, rgba(231, 212, 184, 0.98), rgba(221, 197, 165, 0.95)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 28%);
+    linear-gradient(180deg, rgba(224, 200, 163, 0.99), rgba(211, 184, 145, 0.96)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 28%);
 }
 
 .sidebar-brand {
-  padding: 10px 12px 0;
+  padding: 12px 14px 4px;
 }
 
 .sidebar-brand h1 {
   margin: 0;
-  font-size: 1.62rem;
-  line-height: 1.15;
+  font-size: 1.68rem;
+  line-height: 1.18;
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
 .sidebar-nav {
   display: grid;
-  gap: 12px;
-  margin: 22px 0 0;
+  gap: 14px;
+  margin: 24px 0 0;
   align-content: start;
-  padding: 14px;
-  border-radius: 24px;
-  border: 1px solid rgba(125, 85, 46, 0.18);
+  padding: 16px;
+  border-radius: 26px;
+  border: 1px solid rgba(125, 85, 46, 0.2);
   background:
-    linear-gradient(180deg, rgba(245, 231, 205, 0.98), rgba(236, 217, 184, 0.94)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 36%);
+    linear-gradient(180deg, rgba(233, 211, 176, 0.99), rgba(219, 193, 151, 0.97)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.22), transparent 36%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    0 12px 24px rgba(84, 50, 20, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 rgba(125, 85, 46, 0.06),
+    0 14px 28px rgba(84, 50, 20, 0.1);
 }
 
 .sidebar-item {
   width: 100%;
   text-align: left;
-  padding: 22px 18px;
-  border-radius: 20px;
-  border: 1px solid rgba(125, 85, 46, 0.16);
+  padding: 30px 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(125, 85, 46, 0.22);
   background:
-    linear-gradient(180deg, rgba(253, 245, 231, 0.96), rgba(239, 222, 192, 0.9)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.32), transparent 38%);
+    linear-gradient(180deg, rgba(247, 234, 210, 1), rgba(228, 203, 160, 0.96)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.34), transparent 38%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 18px rgba(70, 41, 19, 0.06);
   cursor: pointer;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .sidebar-item:hover,
 .sidebar-item.is-active {
-  transform: translateX(3px);
-  border-color: rgba(165, 83, 43, 0.42);
-  box-shadow: 0 18px 28px rgba(70, 41, 19, 0.14);
+  transform: translateX(4px);
+  border-color: rgba(165, 83, 43, 0.44);
+  box-shadow: 0 18px 30px rgba(70, 41, 19, 0.14);
 }
 
 .sidebar-item.is-active {
   background:
-    linear-gradient(180deg, rgba(255, 233, 200, 1), rgba(232, 199, 148, 0.96)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.16), transparent 38%);
+    linear-gradient(180deg, rgba(255, 226, 187, 1), rgba(226, 186, 128, 0.97)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 38%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 18px 30px rgba(70, 41, 19, 0.16);
 }
 
 .sidebar-item__title {
   display: block;
   color: var(--surface-dark);
-  font-size: 1.12rem;
+  font-size: 1.22rem;
   font-weight: 700;
-  line-height: 1.28;
+  line-height: 1.38;
 }
 
 .sidebar-footer {
   position: relative;
   z-index: 1;
-  margin-top: 16px;
-  padding: 18px 18px 16px;
-  border-top: 1px solid rgba(117, 83, 49, 0.1);
+  margin-top: 18px;
+  padding: 20px 18px 18px;
+  border-top: 1px solid rgba(117, 83, 49, 0.12);
 }
 
 .sidebar-footer p {
@@ -344,6 +351,10 @@
   margin-top: 18px;
 }
 
+.dashboard-module-list--grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .dashboard-module-card,
 .dashboard-flow-card,
 .stack-card,
@@ -377,6 +388,17 @@
   padding: 22px;
 }
 
+.dashboard-module-card--simple {
+  display: grid;
+  gap: 18px;
+  align-content: space-between;
+  min-height: 154px;
+}
+
+.dashboard-module-card--simple .dashboard-module-card__header {
+  display: block;
+}
+
 .priority-badge,
 .sub-badge,
 .status-badge {
@@ -399,6 +421,12 @@
 .game-piece h4 {
   margin: 0 0 8px;
   font-size: 1.12rem;
+}
+
+.dashboard-module-card--simple h4 {
+  margin: 0;
+  font-size: 1.22rem;
+  line-height: 1.35;
 }
 
 .dashboard-module-card p,
@@ -430,6 +458,10 @@
 .dashboard-main,
 .dashboard-side {
   padding: 26px;
+}
+
+.dashboard-main--full {
+  padding: 28px;
 }
 
 .module-layout {
@@ -911,14 +943,25 @@
   padding: 24px;
 }
 
-.placeholder-card h3 {
-  margin: 0 0 12px;
+.placeholder-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.placeholder-card p {
+.placeholder-card h3 {
   margin: 0;
-  color: var(--text-muted);
-  line-height: 1.75;
+}
+
+.placeholder-stage {
+  min-height: 420px;
+  margin-top: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(125, 85, 46, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 254, 250, 0.96), rgba(245, 236, 220, 0.92)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.42), transparent 34%);
 }
 
 @media (max-width: 1280px) {
@@ -986,6 +1029,10 @@
   }
 
   .dashboard-hero__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-module-list--grid {
     grid-template-columns: 1fr;
   }
 }
