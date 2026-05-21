@@ -1,3 +1,15 @@
+@font-face {
+  font-family: "AppSans";
+  src:
+    local("Alibaba PuHuiTi 2.0 55 Regular"),
+    local("AlibabaPuHuiTi 2.0 55 Regular"),
+    local("Alibaba PuHuiTi 2.0"),
+    url("file:///C:/Windows/Fonts/AlibabaPuHuiTi_2_55_Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --bg: #f5eddf;
   --bg-soft: #fbf7ef;
@@ -16,6 +28,8 @@
   --radius-md: 16px;
   --shadow-lg: 0 22px 50px rgba(74, 45, 18, 0.14);
   --shadow-md: 0 12px 28px rgba(74, 45, 18, 0.08);
+  --font-ui: "AppSans", "Alibaba PuHuiTi 2.0 55 Regular", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --font-display: "AppSans", "Alibaba PuHuiTi 2.0 55 Regular", "Microsoft YaHei", "PingFang SC", sans-serif;
 }
 
 * {
@@ -29,12 +43,19 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-family: var(--font-ui);
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(255, 238, 204, 0.95), transparent 34%),
     radial-gradient(circle at top right, rgba(228, 196, 150, 0.45), transparent 28%),
     linear-gradient(180deg, #f6efe2 0%, #f2e8d9 100%);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 body::before {
@@ -59,6 +80,35 @@ ul {
   z-index: 1;
 }
 
+h1,
+h2,
+h3,
+h4,
+.button,
+.field__label,
+.login-tab,
+.sidebar-item__title,
+.eyebrow {
+  font-family: var(--font-display);
+}
+
+body,
+button,
+input,
+textarea,
+select,
+h1,
+h2,
+h3,
+h4,
+.button,
+.field__label,
+.login-tab,
+.sidebar-item__title,
+.eyebrow {
+  font-family: "AppSans", "Alibaba PuHuiTi 2.0 55 Regular", "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
 .eyebrow {
   margin: 0 0 10px;
   color: var(--accent);
@@ -74,11 +124,11 @@ ul {
   justify-content: center;
   gap: 8px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 14px;
   cursor: pointer;
   padding: 13px 22px;
   font-size: 0.98rem;
-  font-weight: 700;
+  font-weight: 400;
   text-decoration: none;
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }

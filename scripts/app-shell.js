@@ -12,8 +12,9 @@ const state = {
   activeModuleId: defaultModuleId,
   modules: {
     structure: {
-      activeHotspot: "qintou",
-      activeExplodeStep: 0,
+      activeHotspot: null,
+      activeExplodeCraft: "traditional",
+      explodeExpanded: false,
     },
   },
 };
@@ -48,6 +49,7 @@ function setActiveModule(moduleId) {
 function closeOverlay() {
   overlayRoot.classList.remove("is-open");
   overlayRoot.setAttribute("aria-hidden", "true");
+  delete overlayRoot.dataset.locked;
   overlayRoot.innerHTML = "";
 }
 
@@ -55,6 +57,7 @@ function openOverlay(markup, binder) {
   overlayRoot.innerHTML = markup;
   overlayRoot.classList.add("is-open");
   overlayRoot.setAttribute("aria-hidden", "false");
+  overlayRoot.dataset.locked = overlayRoot.querySelector("[data-overlay-lock='true']") ? "true" : "false";
 
   if (binder) {
     binder({
@@ -68,11 +71,17 @@ function openOverlay(markup, binder) {
 
 function updateHeader() {
   const activeModule = getActiveModule();
-  const header = activeModule.header;
+  const header = activeModule.header || {};
+  const eyebrow = header.eyebrow || "";
+  const summary = header.summary || activeModule.summary || "";
 
-  headerEyebrow.textContent = header.eyebrow || "课堂工作台";
+  headerEyebrow.textContent = eyebrow;
+  headerEyebrow.hidden = !eyebrow;
+
   headerTitle.textContent = header.title || activeModule.title;
-  headerSummary.textContent = header.summary || activeModule.summary || "";
+
+  headerSummary.textContent = summary;
+  headerSummary.hidden = !summary;
 
   headerActions.innerHTML =
     state.activeModuleId === defaultModuleId
@@ -129,6 +138,10 @@ function renderApp() {
 }
 
 overlayRoot.addEventListener("click", (event) => {
+  if (overlayRoot.dataset.locked === "true") {
+    return;
+  }
+
   if (event.target === overlayRoot) {
     closeOverlay();
   }

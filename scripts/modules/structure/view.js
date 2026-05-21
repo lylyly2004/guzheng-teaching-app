@@ -1,100 +1,227 @@
-import { assembleOrder, explodeSteps, hotspotData } from "./data.js";
+﻿import { explodeCraftData, explodeCraftOrder, hotspotData, hotspotOrder } from "./data.js";
 
-function renderHotspotButtons() {
-  return assembleOrder
+function renderHotspotButtons(activeHotspot) {
+  return hotspotOrder
     .map((part) => {
       const label = hotspotData[part].title;
-      return `<button class="hotspot-button${part === "qintou" ? " is-active" : ""}" data-part="${part}">${label}</button>`;
+      return `<button class="hotspot-button${part === activeHotspot ? " is-active" : ""}" data-part="${part}"><span class="hotspot-button__label">${label}</span></button>`;
     })
     .join("");
 }
 
-function renderExplodeButtons(activeIndex) {
-  return explodeSteps
-    .map(
-      (step, index) => `
-        <button class="step-button${index === activeIndex ? " is-active" : ""}" data-step-index="${index}">
-          ${step.title}
+function renderHotspotRegions(activeHotspot) {
+  return `
+    <div class="hotspot-overlay" aria-hidden="true">
+      <img class="hotspot-region-image${activeHotspot === "qintou" ? " is-active" : ""}" data-part="qintou" src="./assets/images/hotspot-qintou.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "qinwei" ? " is-active" : ""}" data-part="qinwei" src="./assets/images/hotspot-qinwei.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "ceban" ? " is-active" : ""}" data-part="ceban" src="./assets/images/hotspot-ceban.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "houyueshan" ? " is-active" : ""}" data-part="houyueshan" src="./assets/images/hotspot-houyueshan.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "mianban" ? " is-active" : ""}" data-part="mianban" src="./assets/images/hotspot-mianban.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "qinxian" ? " is-active" : ""}" data-part="qinxian" src="./assets/images/hotspot-qinxian.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "yanzhu" ? " is-active" : ""}" data-part="yanzhu" src="./assets/images/hotspot-yanzhu.png" alt="" />
+      <img class="hotspot-region-image${activeHotspot === "qianyueshan" ? " is-active" : ""}" data-part="qianyueshan" src="./assets/images/hotspot-qianyueshan.png" alt="" />
+      <svg class="hotspot-overlay__svg" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+    </div>
+  `;
+}
+
+function renderHotspotLinks(activeHotspot) {
+  return hotspotOrder
+    .map((part) => `<span class="hotspot-link${activeHotspot === part ? " is-active" : ""}" data-part="${part}"></span>`)
+    .join("");
+}
+
+function renderCraftButtons(activeCraft) {
+  return explodeCraftOrder
+    .map((craftId) => {
+      const craft = explodeCraftData[craftId];
+      return `
+        <button class="craft-button${craftId === activeCraft ? " is-active" : ""}" data-craft-id="${craftId}">
+          <span class="craft-button__title">${craft.title}</span>
+          <span class="craft-button__meta">${craft.eyebrow}</span>
         </button>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
-function renderExplodeParts() {
-  return assembleOrder
-    .map((part) => `<div class="explode-part part-${part}" data-part="${part}" data-label="${hotspotData[part].title}"></div>`)
+function renderExplodedPieces(craft, explodeExpanded) {
+  if (craft.explodedPieces?.length) {
+    return craft.explodedPieces
+      .map(
+        (piece, index) => `
+          <figure
+            class="craft-piece-image${explodeExpanded ? " is-exploded" : ""}"
+            data-piece-id="${piece.id}"
+            style="--enter-x:${piece.enterX || "0px"}; --enter-y:${piece.enterY || "0px"}; --piece-z:${piece.z || 1}; --piece-delay:${index * 46}ms;"
+            aria-label="${piece.label}"
+          >
+            <img src="${piece.src}" alt="${piece.label}" />
+          </figure>
+        `,
+      )
+      .join("");
+  }
+
+  if (craft.explodedLayoutImage) {
+    return `
+      <figure class="craft-exploded-layout${explodeExpanded ? " is-exploded" : ""}" aria-label="${craft.title}拆解结构图">
+        <img src="${craft.explodedLayoutImage}" alt="${craft.title}拆解结构图" />
+      </figure>
+    `;
+  }
+
+  return (craft.parts || [])
+    .map((part, index) => {
+      const offsetX = explodeExpanded ? (index % 4) * 150 - 210 : 0;
+      const offsetY = explodeExpanded ? Math.floor(index / 4) * 118 - 70 : 0;
+      return `<div class="craft-piece${explodeExpanded ? " is-exploded" : ""}" style="--tx:${offsetX}px; --ty:${offsetY}px;">${part}</div>`;
+    })
     .join("");
 }
 
-export function renderStructureView(moduleState) {
-  const activePart = hotspotData[moduleState.activeHotspot];
-  const activeStep = explodeSteps[moduleState.activeExplodeStep];
+function renderCraftAssembly(activeCraft, explodeExpanded) {
+  const craft = explodeCraftData[activeCraft];
+  const piecesMarkup = renderExplodedPieces(craft, explodeExpanded);
+
+  const wholeMarkup = craft.wholeImage
+    ? `<img class="craft-whole-zither__image" src="${craft.wholeImage}" alt="${craft.title}完整示意图" />`
+    : `<div class="craft-whole-zither__placeholder">${craft.title}完整示意图</div>`;
 
   return `
-    <div class="subnav">
-      <button class="subnav-button is-active">模块说明</button>
-      <button class="subnav-button">讲解区</button>
-      <button class="subnav-button">拆解演示</button>
-      <button class="subnav-button">互动游戏</button>
+    <div class="craft-workbench">
+      <div class="craft-workbench__stage-row">
+        <div class="craft-workbench__canvas${explodeExpanded ? " is-exploded" : ""}">
+          <div class="craft-workbench__actions">
+            <button class="button button--primary" id="toggle-craft-explode">${explodeExpanded ? "恢复整体" : "开始拆解"}</button>
+          </div>
+          <div class="craft-stage-viewport">
+            <div class="craft-stage-artboard" style="--artboard-ratio:${craft.artboardRatio || "41 / 100"};">
+              <div class="craft-whole-zither">${wholeMarkup}</div>
+              <div class="craft-pieces">${piecesMarkup}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  `;
+}
 
+export function renderStructureView() {
+  return `
     <div class="module-layout">
-      <div class="module-stack">
-        <section class="module-panel">
-          <h3>模块定位</h3>
-          <p>这一模块先解决“认识古筝结构”的核心课堂任务。老师可以先讲整体，再点热点，再看拆解，最后进入全屏互动游戏。</p>
-          <div class="action-row">
-            <button class="button button--primary" id="open-structure-game">进入全屏互动游戏</button>
-          </div>
-        </section>
+      <section class="module-panel structure-entry-card structure-entry-card--hotspot">
+        <div class="module-panel__head">
+          <h3>结构讲解</h3>
+        </div>
+        <p class="module-note">查看古筝各部位结构和名称。</p>
+        <div class="structure-entry-visual" aria-hidden="true">
+          <span class="structure-entry-visual__badge">部位热区</span>
+          <span class="structure-entry-visual__line structure-entry-visual__line--long"></span>
+          <span class="structure-entry-visual__line structure-entry-visual__line--mid"></span>
+          <span class="structure-entry-visual__dot structure-entry-visual__dot--a"></span>
+          <span class="structure-entry-visual__dot structure-entry-visual__dot--b"></span>
+          <span class="structure-entry-visual__dot structure-entry-visual__dot--c"></span>
+        </div>
+        <button class="button button--primary" id="open-structure-hotspot">进入结构讲解</button>
+      </section>
 
-        <section class="module-panel">
-          <h3>点击部位讲解</h3>
-          <p>右侧信息卡会随着你点击古筝部位而切换。现在先用示意图，后面你给正式素材后，我直接把这块替换进去。</p>
-          <div class="hotspot-stage">
+      <section class="module-panel structure-entry-card structure-entry-card--explode">
+        <div class="module-panel__head">
+          <h3>拆解演示</h3>
+        </div>
+        <p class="module-note">从传统工艺、半挖筝、挖筝三个方向认识古筝由哪些部件拼合而成。</p>
+        <div class="structure-entry-visual" aria-hidden="true">
+          <span class="structure-entry-visual__badge">工艺演示</span>
+          <span class="structure-entry-visual__stack structure-entry-visual__stack--top"></span>
+          <span class="structure-entry-visual__stack structure-entry-visual__stack--mid"></span>
+          <span class="structure-entry-visual__stack structure-entry-visual__stack--base"></span>
+        </div>
+        <button class="button button--primary" id="open-structure-explode">进入拆解演示</button>
+      </section>
+
+      <section class="module-panel structure-entry-card structure-entry-card--game">
+        <div class="module-panel__head">
+          <h3>互动拼合游戏</h3>
+        </div>
+        <p class="module-note">通过拖拽部件完成整琴拼合。</p>
+        <div class="structure-entry-visual" aria-hidden="true">
+          <span class="structure-entry-visual__badge">拼合练习</span>
+          <span class="structure-entry-visual__outline"></span>
+          <span class="structure-entry-visual__piece structure-entry-visual__piece--left"></span>
+          <span class="structure-entry-visual__piece structure-entry-visual__piece--mid"></span>
+          <span class="structure-entry-visual__piece structure-entry-visual__piece--right"></span>
+        </div>
+        <button class="button button--primary structure-game-entry" id="open-structure-game">进入互动拼合游戏</button>
+      </section>
+    </div>
+  `;
+}
+
+export function createStructureHotspotMarkup(activeHotspot) {
+  const activePart = activeHotspot ? hotspotData[activeHotspot] : null;
+
+  return `
+    <div class="fullscreen-panel" data-overlay-lock="true">
+      <div class="fullscreen-content">
+        <aside class="fullscreen-side">
+          <div class="fullscreen-side__eyebrow">当前部位</div>
+          <div class="module-sidecard__head">
+            <h3 id="structure-side-title">${activePart?.title || ""}</h3>
+            <button class="button button--ghost" id="close-structure-hotspot">关闭</button>
+          </div>
+          <p id="structure-side-description">${activePart?.description || ""}</p>
+          <ul class="support-list" id="structure-side-points">
+            ${(activePart?.points || []).map((point) => `<li>${point}</li>`).join("")}
+          </ul>
+          <div class="structure-side-summary">
+            <span class="status-badge">结构讲解</span>
+            <span class="status-badge">部位识别</span>
+          </div>
+        </aside>
+
+        <section class="fullscreen-stage">
+          <div class="module-panel__head">
+            <h3>结构讲解</h3>
+          </div>
+          <div class="fullscreen-stage__eyebrow">点击名称框，查看古筝对应部位的结构名称与讲解内容。</div>
+          <div class="hotspot-stage hotspot-stage--fullscreen">
             <div class="hotspot-zither">
-              <span class="hotspot-body"></span>
-              <span class="hotspot-string s1"></span>
-              <span class="hotspot-string s2"></span>
-              <span class="hotspot-string s3"></span>
-              <span class="hotspot-string s4"></span>
-              <span class="hotspot-string s5"></span>
-              <span class="hotspot-bridge b1"></span>
-              <span class="hotspot-bridge b2"></span>
-              <span class="hotspot-bridge b3"></span>
-              ${renderHotspotButtons()}
+              <div class="hotspot-figure is-mirrored">
+                <img class="hotspot-image" src="./assets/images/structure-guzheng.png" alt="古筝结构图" />
+                ${renderHotspotRegions(activeHotspot)}
+                ${renderHotspotLinks(activeHotspot)}
+                ${renderHotspotButtons(activeHotspot)}
+              </div>
             </div>
           </div>
-        </section>
-
-        <section class="module-panel">
-          <h3>分步拆解演示</h3>
-          <p>这部分先用按钮控制拆解顺序，后续正式接 PNG 分层图后，可以平滑升级成真实拆解动画。</p>
-          <div class="explode-stage">
-            <div class="step-list">
-              ${renderExplodeButtons(moduleState.activeExplodeStep)}
-            </div>
-            <div class="explode-view">
-              ${renderExplodeParts()}
-            </div>
-          </div>
-          <p id="explode-description" class="support-list">${activeStep.description}</p>
         </section>
       </div>
+    </div>
+  `;
+}
 
-      <aside class="module-sidecard">
-        <h3 id="structure-side-title">${activePart.title}</h3>
-        <p id="structure-side-description">${activePart.description}</p>
-        <ul class="support-list" id="structure-side-points">
-          ${activePart.points.map((point) => `<li>${point}</li>`).join("")}
-        </ul>
-        <div class="action-stack">
-          <button class="sidebar-action is-active">结构讲解</button>
-          <button class="sidebar-action">拆解演示</button>
-          <button class="sidebar-action" id="open-structure-game-alt">互动游戏</button>
-        </div>
-      </aside>
+export function createStructureExplodeMarkup(activeCraft, explodeExpanded) {
+  return `
+    <div class="fullscreen-panel" data-overlay-lock="true">
+      <div class="fullscreen-content fullscreen-content--explode">
+        <aside class="fullscreen-side">
+          <div class="fullscreen-side__eyebrow">工艺列表</div>
+          <div class="module-sidecard__head">
+            <h3>古筝制作工艺</h3>
+            <button class="button button--ghost" id="close-structure-explode">关闭</button>
+          </div>
+          <div class="craft-list">
+            ${renderCraftButtons(activeCraft)}
+          </div>
+        </aside>
+
+        <section class="fullscreen-stage fullscreen-stage--explode-clean">
+          <div class="explode-stage explode-stage--fullscreen explode-stage--craft">
+            ${renderCraftAssembly(activeCraft, explodeExpanded)}
+          </div>
+        </section>
+      </div>
     </div>
   `;
 }
