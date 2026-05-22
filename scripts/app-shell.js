@@ -21,6 +21,7 @@ const state = {
 
 const navRoot = document.getElementById("sidebar-nav");
 const contentRoot = document.getElementById("workspace-content");
+const workspaceMain = document.querySelector(".workspace-main");
 const headerEyebrow = document.getElementById("header-eyebrow");
 const headerTitle = document.getElementById("header-title");
 const headerSummary = document.getElementById("header-summary");
@@ -47,6 +48,10 @@ function setActiveModule(moduleId) {
 }
 
 function closeOverlay() {
+  if (state.modules?.structure) {
+    state.modules.structure.activeHotspot = null;
+    state.modules.structure.explodeExpanded = false;
+  }
   overlayRoot.classList.remove("is-open");
   overlayRoot.setAttribute("aria-hidden", "true");
   delete overlayRoot.dataset.locked;
@@ -132,6 +137,9 @@ function renderContent() {
 }
 
 function renderApp() {
+  if (workspaceMain) {
+    workspaceMain.dataset.activeModule = state.activeModuleId;
+  }
   updateSidebar();
   updateHeader();
   renderContent();

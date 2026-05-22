@@ -46,27 +46,10 @@ function renderCraftButtons(activeCraft) {
 }
 
 function renderExplodedPieces(craft, explodeExpanded) {
-  if (craft.explodedPieces?.length) {
-    return craft.explodedPieces
-      .map(
-        (piece, index) => `
-          <figure
-            class="craft-piece-image${explodeExpanded ? " is-exploded" : ""}"
-            data-piece-id="${piece.id}"
-            style="--enter-x:${piece.enterX || "0px"}; --enter-y:${piece.enterY || "0px"}; --piece-z:${piece.z || 1}; --piece-delay:${index * 46}ms;"
-            aria-label="${piece.label}"
-          >
-            <img src="${piece.src}" alt="${piece.label}" />
-          </figure>
-        `,
-      )
-      .join("");
-  }
-
   if (craft.explodedLayoutImage) {
     return `
-      <figure class="craft-exploded-layout${explodeExpanded ? " is-exploded" : ""}" aria-label="${craft.title}拆解结构图">
-        <img src="${craft.explodedLayoutImage}" alt="${craft.title}拆解结构图" />
+      <figure class="craft-exploded-layout" aria-label="${craft.title}拆解结构图">
+        <img src="${craft.explodedLayoutImage}" alt="${craft.title}拆解结构图" loading="eager" decoding="async" fetchpriority="high" />
       </figure>
     `;
   }
@@ -85,7 +68,7 @@ function renderCraftAssembly(activeCraft, explodeExpanded) {
   const piecesMarkup = renderExplodedPieces(craft, explodeExpanded);
 
   const wholeMarkup = craft.wholeImage
-    ? `<img class="craft-whole-zither__image" src="${craft.wholeImage}" alt="${craft.title}完整示意图" />`
+    ? `<img class="craft-whole-zither__image" src="${craft.wholeImage}" alt="${craft.title}完整示意图" loading="eager" decoding="async" fetchpriority="high" />`
     : `<div class="craft-whole-zither__placeholder">${craft.title}完整示意图</div>`;
 
   return `
@@ -114,39 +97,30 @@ export function renderStructureView() {
         <div class="module-panel__head">
           <h3>结构讲解</h3>
         </div>
-        <p class="module-note">查看古筝各部位结构和名称。</p>
+        <p class="module-note">认识古筝各部位名称，了解整琴结构分布。</p>
         <div class="structure-entry-visual" aria-hidden="true">
-          <span class="structure-entry-visual__badge">部位热区</span>
-          <span class="structure-entry-visual__line structure-entry-visual__line--long"></span>
-          <span class="structure-entry-visual__line structure-entry-visual__line--mid"></span>
-          <span class="structure-entry-visual__dot structure-entry-visual__dot--a"></span>
-          <span class="structure-entry-visual__dot structure-entry-visual__dot--b"></span>
-          <span class="structure-entry-visual__dot structure-entry-visual__dot--c"></span>
+          <img class="structure-entry-visual__image" src="./assets/images/structure-entry-cover.png" alt="" />
         </div>
         <button class="button button--primary" id="open-structure-hotspot">进入结构讲解</button>
       </section>
 
       <section class="module-panel structure-entry-card structure-entry-card--explode">
-        <div class="module-panel__head">
-          <h3>拆解演示</h3>
-        </div>
-        <p class="module-note">从传统工艺、半挖筝、挖筝三个方向认识古筝由哪些部件拼合而成。</p>
-        <div class="structure-entry-visual" aria-hidden="true">
-          <span class="structure-entry-visual__badge">工艺演示</span>
-          <span class="structure-entry-visual__stack structure-entry-visual__stack--top"></span>
-          <span class="structure-entry-visual__stack structure-entry-visual__stack--mid"></span>
-          <span class="structure-entry-visual__stack structure-entry-visual__stack--base"></span>
-        </div>
-        <button class="button button--primary" id="open-structure-explode">进入拆解演示</button>
-      </section>
+          <div class="module-panel__head">
+            <h3>拆解演示</h3>
+          </div>
+          <p class="module-note">观察古筝由哪些部件组合而成，理解制作结构关系。</p>
+          <div class="structure-entry-visual" aria-hidden="true">
+            <img class="structure-entry-visual__image" src="./assets/images/explode-entry-cover.png" alt="" />
+          </div>
+          <button class="button button--primary" id="open-structure-explode">进入拆解演示</button>
+        </section>
 
       <section class="module-panel structure-entry-card structure-entry-card--game">
         <div class="module-panel__head">
-          <h3>互动拼合游戏</h3>
+          <h3>互动游戏</h3>
         </div>
-        <p class="module-note">通过拖拽部件完成整琴拼合。</p>
+        <p class="module-note">通过拼合互动，加深对古筝结构与部件的认识。</p>
         <div class="structure-entry-visual" aria-hidden="true">
-          <span class="structure-entry-visual__badge">拼合练习</span>
           <span class="structure-entry-visual__outline"></span>
           <span class="structure-entry-visual__piece structure-entry-visual__piece--left"></span>
           <span class="structure-entry-visual__piece structure-entry-visual__piece--mid"></span>
@@ -225,3 +199,7 @@ export function createStructureExplodeMarkup(activeCraft, explodeExpanded) {
     </div>
   `;
 }
+
+
+
+

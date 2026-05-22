@@ -2,6 +2,59 @@
 import { createStructureGameMarkup, bindStructureGame } from "./game.js";
 import { createStructureExplodeMarkup, createStructureHotspotMarkup, renderStructureView } from "./view.js";
 
+const craftAssetLoaders = new Map();
+
+function preloadImage(src) {
+  if (!src) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.loading = "eager";
+    image.fetchPriority = "high";
+
+    const finish = () => resolve();
+
+    image.onload = () => {
+      if (typeof image.decode === "function") {
+        image.decode().catch(() => undefined).finally(finish);
+        return;
+      }
+      finish();
+    };
+
+    image.onerror = finish;
+    image.src = src;
+
+    if (image.complete) {
+      image.onload();
+    }
+  });
+}
+
+function preloadCraftAssets(craftId) {
+  if (!craftId) {
+    return Promise.resolve();
+  }
+
+  if (craftAssetLoaders.has(craftId)) {
+    return craftAssetLoaders.get(craftId);
+  }
+
+  const craft = explodeCraftData[craftId];
+  const loader = Promise.all([
+    preloadImage(craft?.wholeImage),
+    preloadImage(craft?.explodedLayoutImage),
+  ]).finally(() => {
+    craftAssetLoaders.set(craftId, Promise.resolve());
+  });
+
+  craftAssetLoaders.set(craftId, loader);
+  return loader;
+}
+
 const hotspotGuideAnchors = {
   houyueshan: { bx: 0.5, by: 1, tx: 0.764, ty: 0.455 },
   qinxian: { bx: 0.5, by: 1, tx: 0.487, ty: 0.306 },
@@ -19,7 +72,7 @@ export const structureModule = {
   summary: "",
   priority: "高",
   header: {
-    eyebrow: "结构认知",
+    eyebrow: "",
     title: "古筝结构认知",
     summary: "",
   },
@@ -36,6 +89,7 @@ export const structureModule = {
     });
 
     root.querySelector("#open-structure-explode")?.addEventListener("click", () => {
+      state.modules.structure.explodeExpanded = false;
       openOverlay(createStructureExplodeMarkup(state.modules.structure.activeExplodeCraft, state.modules.structure.explodeExpanded), ({ root: overlayRoot, closeOverlay }) => {
         bindStructureExplodeOverlay(overlayRoot, state, closeOverlay);
       });
@@ -126,57 +180,36 @@ function bindStructureHotspotOverlay(root, state) {
 }
 
 function bindStructureExplodeOverlay(root, state, closeOverlay) {
-  root.querySelector("#close-structure-explode")?.addEventListener("click", closeOverlay);
+  preloadCraftAssets(state.modules.structure.activeExplodeCraft);
+
+  root.querySelector("#close-structure-explode")?.addEventListener("click", () => {
+    state.modules.structure.explodeExpanded = false;
+    closeOverlay();
+  });
 
   root.querySelectorAll(".craft-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.modules.structure.activeExplodeCraft = button.dataset.craftId;
+    button.addEventListener("click", async () => {
+      const nextCraftId = button.dataset.craftId;
+      await preloadCraftAssets(nextCraftId);
+      state.modules.structure.activeExplodeCraft = nextCraftId;
       state.modules.structure.explodeExpanded = false;
       rerenderExplodeOverlay(root, state, closeOverlay);
     });
   });
 
-  root.querySelector("#toggle-craft-explode")?.addEventListener("click", () => {
+  root.querySelector("#toggle-craft-explode")?.addEventListener("click", async () => {
     const canvas = root.querySelector(".craft-workbench__canvas");
     const toggleButton = root.querySelector("#toggle-craft-explode");
 
-    if (!canvas || !toggleButton || toggleButton.disabled) {
+    if (!canvas || !toggleButton) {
       return;
     }
 
-    const expanding = !state.modules.structure.explodeExpanded;
-    state.modules.structure.explodeExpanded = expanding;
-    toggleButton.disabled = true;
-
-    if (expanding) {
-      canvas.classList.remove("is-collapsing");
-      canvas.classList.add("is-expanding");
-      window.requestAnimationFrame(() => {
-        canvas.classList.add("is-exploded");
-      });
-
-      window.setTimeout(() => {
-        canvas.classList.remove("is-expanding");
-        toggleButton.textContent = "恢复整体";
-        toggleButton.disabled = false;
-      }, 760);
-      return;
-    }
-
-    canvas.classList.remove("is-expanding");
-    canvas.classList.add("is-collapsing");
-    canvas.classList.remove("is-exploded");
-
-    window.setTimeout(() => {
-      canvas.classList.remove("is-collapsing");
-      toggleButton.textContent = "开始拆解";
-      toggleButton.disabled = false;
-    }, 620);
+    await preloadCraftAssets(state.modules.structure.activeExplodeCraft);
+    state.modules.structure.explodeExpanded = !state.modules.structure.explodeExpanded;
+    canvas.classList.toggle("is-exploded", state.modules.structure.explodeExpanded);
+    toggleButton.textContent = state.modules.structure.explodeExpanded ? "恢复整体" : "开始拆解";
   });
-
-  const activeCraft = explodeCraftData[state.modules.structure.activeExplodeCraft];
-  const descriptionNode = root.querySelector("#explode-description");
-  if (descriptionNode && activeCraft?.detail) {
-    descriptionNode.textContent = activeCraft.detail;
-  }
 }
+
+
