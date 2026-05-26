@@ -2100,3 +2100,273 @@
 
 
 
+
+.fullscreen-content--game {
+  display: block;
+  height: 100%;
+  padding: 0;
+}
+
+.fullscreen-panel--game {
+  min-height: min(98vh, 1100px);
+}
+
+.fullscreen-panel--game .puzzle-layout {
+  position: relative;
+  min-height: min(98vh, 1100px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.fullscreen-panel--game .puzzle-topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 48px;
+  flex: 0 0 auto;
+}
+
+.fullscreen-panel--game .puzzle-topbar [data-game-close] {
+  min-width: auto;
+  height: auto;
+  border-radius: 14px;
+  font-size: 0.98rem;
+  font-weight: 400;
+  padding: 10px 16px;
+}
+
+.fullscreen-panel--game .puzzle-main-stage {
+  flex: 1 1 auto;
+  min-height: 620px;
+  display: flex;
+}
+
+.fullscreen-panel--game .puzzle-board-wrap {
+  flex: 1 1 auto;
+  min-height: 620px;
+  padding: 14px;
+  box-sizing: border-box;
+  border-radius: 28px;
+  border: 1px solid rgba(168, 117, 73, 0.16);
+  background: rgba(250, 244, 232, 0.94);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.68);
+}
+
+.fullscreen-panel--game .puzzle-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 592px;
+  box-sizing: border-box;
+  border-radius: 24px;
+  border: 1px solid rgba(176, 134, 93, 0.14);
+  background-color: rgba(250, 244, 232, 0.94);
+  background-image: repeating-linear-gradient(135deg, rgba(176, 145, 110, 0.04) 0 22px, rgba(255, 255, 255, 0.04) 22px 44px);
+  overflow: hidden;
+}
+
+.fullscreen-panel--game .puzzle-zone {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 2px dashed rgba(125, 85, 46, 0.24);
+  color: rgba(82, 58, 36, 0.72);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.fullscreen-panel--game .puzzle-zone span {
+  pointer-events: none;
+}
+
+.fullscreen-panel--game .puzzle-zone.is-over {
+  background: rgba(214, 174, 105, 0.14);
+  border-color: rgba(165, 83, 43, 0.38);
+}
+
+.fullscreen-panel--game .puzzle-zone.is-filled {
+  background: rgba(214, 174, 105, 0.2);
+  border-color: rgba(165, 83, 43, 0.42);
+  color: var(--accent-strong);
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="qintou"] {
+  left: 0;
+  top: 154px;
+  width: 88px;
+  height: 88px;
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="qinwei"] {
+  right: 0;
+  top: 154px;
+  width: 88px;
+  height: 88px;
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="mianban"] {
+  left: 104px;
+  right: 104px;
+  top: 142px;
+  height: 110px;
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="qinxian"] {
+  left: 126px;
+  right: 126px;
+  top: 278px;
+  height: 32px;
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="yanzhu"] {
+  left: 50%;
+  top: 176px;
+  width: 48px;
+  height: 112px;
+  transform: translateX(-50%);
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="yueshan"] {
+  left: 84px;
+  top: 138px;
+  width: 44px;
+  height: 118px;
+}
+
+.fullscreen-panel--game .puzzle-zone[data-zone="qianyueshan"] {
+  right: 84px;
+  top: 192px;
+  width: 44px;
+  height: 118px;
+}
+
+.fullscreen-panel--game .puzzle-tip {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #7b5a42;
+  line-height: 1.2;
+}
+
+.fullscreen-panel--game .puzzle-bottom-dock {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100% - 28px);
+  padding: 14px;
+  border: 1px solid rgba(154, 111, 71, 0.24);
+  border-radius: 22px;
+  background-color: rgba(243, 226, 196, 0.95);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 24px rgba(82, 50, 24, 0.1);
+  box-sizing: border-box;
+}
+
+.fullscreen-panel--game .puzzle-piece-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 14px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0 2px 2px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+
+.fullscreen-panel--game .puzzle-piece-button {
+  flex: 0 0 154px;
+  width: 154px;
+  min-height: 172px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(125, 85, 46, 0.16);
+  background: rgba(255, 251, 245, 0.94);
+  color: var(--surface-dark);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+  box-sizing: border-box;
+}
+
+.fullscreen-panel--game .puzzle-piece-button:hover,
+.fullscreen-panel--game .puzzle-piece-button.is-active {
+  transform: translateY(-2px);
+  border-color: rgba(165, 83, 43, 0.35);
+  box-shadow: 0 16px 24px rgba(70, 41, 19, 0.08);
+}
+
+.fullscreen-panel--game .puzzle-piece-button.is-used,
+.fullscreen-panel--game .puzzle-piece-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.fullscreen-panel--game .puzzle-piece-button__title {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.fullscreen-panel--game .puzzle-piece-button__thumb {
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+}
+
+.fullscreen-panel--game .puzzle-piece-button__thumb img {
+  max-width: 100%;
+  max-height: 78px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 1180px) {
+  .fullscreen-panel--game .puzzle-board-wrap {
+    min-height: 560px;
+  }
+
+  .fullscreen-panel--game .puzzle-stage {
+    min-height: 532px;
+  }
+}
+
+@media (max-width: 860px) {
+  .fullscreen-panel--game .puzzle-bottom-dock {
+    width: calc(100% - 28px);
+    max-width: none;
+  }
+
+  .fullscreen-panel--game .puzzle-piece-row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .fullscreen-panel--game .puzzle-piece-button {
+    flex: 0 0 calc(50% - 7px);
+    width: calc(50% - 7px);
+    max-width: 180px;
+  }
+}
+

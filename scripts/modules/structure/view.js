@@ -126,7 +126,7 @@ export function renderStructureView() {
           <span class="structure-entry-visual__piece structure-entry-visual__piece--mid"></span>
           <span class="structure-entry-visual__piece structure-entry-visual__piece--right"></span>
         </div>
-        <button class="button button--primary structure-game-entry" id="open-structure-game">进入互动拼合游戏</button>
+        <button class="button button--primary structure-game-entry" id="open-structure-game">进入拼合游戏</button>
       </section>
     </div>
   `;
@@ -199,6 +199,7 @@ export function createStructureExplodeMarkup(activeCraft, explodeExpanded) {
     </div>
   `;
 }
+
 
 
 
