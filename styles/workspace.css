@@ -649,7 +649,7 @@
 }
 
 .hotspot-stage--fullscreen {
-  min-height: 760px;
+  min-height: 860px;
   margin-top: 12px;
   background:
     linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(244, 234, 217, 0.94)),
@@ -2114,20 +2114,21 @@
 .fullscreen-panel--game .puzzle-layout {
   position: relative;
   min-height: min(98vh, 1100px);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 14px;
   padding: 14px;
   box-sizing: border-box;
 }
+
 
 .fullscreen-panel--game .puzzle-topbar {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   min-height: 48px;
-  flex: 0 0 auto;
 }
+
 
 .fullscreen-panel--game .puzzle-topbar [data-game-close] {
   min-width: auto;
@@ -2139,14 +2140,14 @@
 }
 
 .fullscreen-panel--game .puzzle-main-stage {
-  flex: 1 1 auto;
-  min-height: 620px;
   display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .fullscreen-panel--game .puzzle-board-wrap {
   flex: 1 1 auto;
-  min-height: 620px;
+  min-height: 0;
   padding: 14px;
   box-sizing: border-box;
   border-radius: 28px;
@@ -2155,120 +2156,331 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.68);
 }
 
+.fullscreen-panel--game .puzzle-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: calc(100vh - 170px);
+}
+
+.fullscreen-panel--game .game-topbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fullscreen-panel--game .game-topbar .button {
+  min-width: auto;
+}
+
 .fullscreen-panel--game .puzzle-stage {
   position: relative;
+  min-height: 760px;
+  border-radius: 24px;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(199, 160, 120, 0.06) 0,
+      rgba(199, 160, 120, 0.06) 18px,
+      rgba(255, 255, 255, 0.14) 18px,
+      rgba(255, 255, 255, 0.14) 36px
+    ),
+    rgba(255, 251, 244, 0.98);
+  border: 1px solid rgba(190, 154, 115, 0.18);
+  overflow: hidden;
+}
+
+.fullscreen-panel--game .puzzle-stage-artboard {
+  position: absolute;
+  inset: 3% 0.5% 6%;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  z-index: 1;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--ceban {
+  opacity: 0.58;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--mianban {
+  opacity: 0.3;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--qintou {
+  opacity: 0.38;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--qintou.is-active {
+  opacity: 0.62;
+  filter: saturate(1.08) brightness(1.04);
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--qintou.is-filled {
+  opacity: 0.5;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--mianban.is-active {
+  opacity: 0.52;
+  filter: saturate(1.08) brightness(1.03);
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--mianban.is-filled {
+  opacity: 0.44;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--ceban.is-active {
+  opacity: 0.78;
+  filter: saturate(1.12) brightness(1.04);
+}
+
+.fullscreen-panel--game .puzzle-stage-guide--ceban.is-filled {
+  opacity: 0.72;
+}
+
+.fullscreen-panel--game .puzzle-stage-guide img {
   width: 100%;
   height: 100%;
-  min-height: 592px;
-  box-sizing: border-box;
-  border-radius: 24px;
-  border: 1px solid rgba(176, 134, 93, 0.14);
-  background-color: rgba(250, 244, 232, 0.94);
-  background-image: repeating-linear-gradient(135deg, rgba(176, 145, 110, 0.04) 0 22px, rgba(255, 255, 255, 0.04) 22px 44px);
-  overflow: hidden;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+.fullscreen-panel--game .puzzle-stage-outline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(176, 134, 93, 0.32);
+  z-index: 2;
+  -webkit-mask: center / contain no-repeat url("../assets/images/puzzle-outline-base.png");
+  mask: center / contain no-repeat url("../assets/images/puzzle-outline-base.png");
+}
+
+.fullscreen-panel--game .puzzle-stage-pieces {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.fullscreen-panel--game .puzzle-stage-piece {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transform-origin: center center;
+  transition: opacity 180ms ease, transform 220ms ease;
+}
+
+.fullscreen-panel--game .puzzle-stage-piece.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.fullscreen-panel--game .puzzle-stage-piece img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(64, 39, 16, 0.15));
+}
+
+.fullscreen-panel--game .puzzle-stage-piece[data-stage-full-canvas="true"] {
+  inset: 0;
 }
 
 .fullscreen-panel--game .puzzle-zone {
   position: absolute;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  border: 2px dashed rgba(125, 85, 46, 0.24);
-  color: rgba(82, 58, 36, 0.72);
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: center;
-  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+  display: block;
+  border: 2px dashed transparent;
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
+  pointer-events: auto;
+  z-index: 4;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 
 .fullscreen-panel--game .puzzle-zone span {
-  pointer-events: none;
+  display: none;
 }
 
-.fullscreen-panel--game .puzzle-zone.is-over {
-  background: rgba(214, 174, 105, 0.14);
-  border-color: rgba(165, 83, 43, 0.38);
+.fullscreen-panel--game .zone-qintou {
+  left: 86.16%;
+  top: 29.89%;
+  width: 13.43%;
+  height: 35.38%;
+}
+
+.fullscreen-panel--game .zone-qinwei {
+  left: 0.3%;
+  top: 41.54%;
+  width: 24.65%;
+  height: 32.31%;
+}
+
+.fullscreen-panel--game .zone-mianban {
+  left: 18.54%;
+  top: 27.31%;
+  width: 68.18%;
+  height: 28.7%;
+  clip-path: polygon(
+    31.7% 0%,
+    77.01% 0%,
+    77.08% 7.74%,
+    95.19% 15.48%,
+    94.19% 23.23%,
+    97.33% 30.97%,
+    97.02% 38.71%,
+    98.55% 46.45%,
+    98.93% 54.19%,
+    98.55% 61.94%,
+    99.16% 69.68%,
+    99.54% 77.42%,
+    99.85% 85.16%,
+    95.34% 92.9%,
+    15.2% 100%,
+    14.67% 100%,
+    14.59% 92.9%,
+    14.29% 85.16%,
+    13.52% 77.42%,
+    11.76% 69.68%,
+    6.65% 61.94%,
+    1.38% 54.19%,
+    0.08% 46.45%,
+    10.77% 38.71%,
+    26.36% 30.97%,
+    34.53% 23.23%,
+    35.91% 15.48%,
+    31.7% 7.74%
+  );
+}
+
+.fullscreen-panel--game .zone-ceban {
+  left: auto;
+  top: auto;
+  width: auto;
+  height: auto;
+}
+
+.fullscreen-panel--game .zone-qinxian {
+  left: 17.78%;
+  top: 29.01%;
+  width: 70.4%;
+  height: 22.53%;
+}
+
+.fullscreen-panel--game .zone-yanzhu {
+  left: 52.53%;
+  top: 31.65%;
+  width: 24.55%;
+  height: 30.33%;
+  border-radius: 22px;
+}
+
+.fullscreen-panel--game .zone-houyueshan {
+  left: 14.55%;
+  top: 40.77%;
+  width: 4.85%;
+  height: 26.15%;
+  border-radius: 18px;
+}
+
+.fullscreen-panel--game .zone-qianyueshan {
+  left: 82.93%;
+  top: 29.23%;
+  width: 4.44%;
+  height: 34.29%;
+  border-radius: 18px;
+}
+
+.fullscreen-panel--game .puzzle-zone.is-active {
+  border-color: rgba(201, 145, 82, 0.72);
+  background: rgba(233, 186, 122, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 230, 0.6);
 }
 
 .fullscreen-panel--game .puzzle-zone.is-filled {
-  background: rgba(214, 174, 105, 0.2);
-  border-color: rgba(165, 83, 43, 0.42);
-  color: var(--accent-strong);
+  border-color: rgba(148, 105, 64, 0.36);
+  background: rgba(148, 105, 64, 0.06);
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="qintou"] {
-  left: 0;
-  top: 154px;
-  width: 88px;
-  height: 88px;
+.fullscreen-panel--game .stage-piece-qinwei {
+  left: 0.3%;
+  top: 41.54%;
+  width: 24.65%;
+  height: 32.31%;
+  z-index: 3;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="qinwei"] {
-  right: 0;
-  top: 154px;
-  width: 88px;
-  height: 88px;
+.fullscreen-panel--game .stage-piece-houyueshan {
+  left: 14.55%;
+  top: 40.77%;
+  width: 4.85%;
+  height: 26.15%;
+  z-index: 7;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="mianban"] {
-  left: 104px;
-  right: 104px;
-  top: 142px;
-  height: 110px;
+.fullscreen-panel--game .stage-piece-mianban {
+  z-index: 4;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="qinxian"] {
-  left: 126px;
-  right: 126px;
-  top: 278px;
-  height: 32px;
+.fullscreen-panel--game .stage-piece-ceban {
+  z-index: 2;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="yanzhu"] {
-  left: 50%;
-  top: 176px;
-  width: 48px;
-  height: 112px;
-  transform: translateX(-50%);
+.fullscreen-panel--game .stage-piece-qinxian {
+  left: 17.78%;
+  top: 29.01%;
+  width: 70.4%;
+  height: 22.53%;
+  z-index: 8;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="yueshan"] {
-  left: 84px;
-  top: 138px;
-  width: 44px;
-  height: 118px;
+.fullscreen-panel--game .stage-piece-yanzhu {
+  left: 52.53%;
+  top: 31.65%;
+  width: 24.55%;
+  height: 30.33%;
+  z-index: 6;
 }
 
-.fullscreen-panel--game .puzzle-zone[data-zone="qianyueshan"] {
-  right: 84px;
-  top: 192px;
-  width: 44px;
-  height: 118px;
+.fullscreen-panel--game .stage-piece-qianyueshan {
+  left: 82.93%;
+  top: 29.23%;
+  width: 4.44%;
+  height: 34.29%;
+  z-index: 7;
+}
+
+.fullscreen-panel--game .stage-piece-qintou {
+  z-index: 5;
 }
 
 .fullscreen-panel--game .puzzle-tip {
-  margin: 0;
+  margin: 12px 0;
   width: 100%;
   text-align: center;
   font-size: 20px;
-  font-weight: 500;
-  color: #7b5a42;
-  line-height: 1.2;
+  line-height: 1.5;
+  color: rgba(120, 90, 60, 0.92);
 }
 
 .fullscreen-panel--game .puzzle-bottom-dock {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: max-content;
+  width: fit-content;
   max-width: calc(100% - 28px);
+  margin: 0 auto;
   padding: 14px;
-  border: 1px solid rgba(154, 111, 71, 0.24);
-  border-radius: 22px;
-  background-color: rgba(243, 226, 196, 0.95);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 24px rgba(82, 50, 24, 0.1);
-  box-sizing: border-box;
+  border-radius: 24px;
+  border: 1px solid rgba(168, 117, 73, 0.18);
+  background: rgba(244, 224, 188, 0.72);
+  box-shadow: 0 18px 32px rgba(165, 127, 86, 0.18);
+  overflow-x: auto;
 }
 
 .fullscreen-panel--game .puzzle-piece-row {
@@ -2277,96 +2489,79 @@
   align-items: stretch;
   gap: 14px;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  max-width: 100%;
-  padding: 0 2px 2px;
-  box-sizing: border-box;
-  scrollbar-width: thin;
+  width: auto;
 }
 
 .fullscreen-panel--game .puzzle-piece-button {
-  flex: 0 0 154px;
-  width: 154px;
-  min-height: 172px;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  align-items: start;
+  width: 124px;
+  min-width: 124px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 10px;
-  padding: 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(125, 85, 46, 0.16);
-  background: rgba(255, 251, 245, 0.94);
-  color: var(--surface-dark);
-  cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
-  box-sizing: border-box;
+  padding: 12px 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(179, 140, 97, 0.22);
+  background: rgba(255, 251, 245, 0.96);
+  box-shadow: 0 10px 22px rgba(156, 118, 79, 0.12);
+  cursor: grab;
 }
 
-.fullscreen-panel--game .puzzle-piece-button:hover,
-.fullscreen-panel--game .puzzle-piece-button.is-active {
-  transform: translateY(-2px);
-  border-color: rgba(165, 83, 43, 0.35);
-  box-shadow: 0 16px 24px rgba(70, 41, 19, 0.08);
+.fullscreen-panel--game .puzzle-piece-button.is-dragging {
+  opacity: 0.7;
 }
 
-.fullscreen-panel--game .puzzle-piece-button.is-used,
-.fullscreen-panel--game .puzzle-piece-button:disabled {
-  opacity: 0.45;
+.fullscreen-panel--game .puzzle-piece-button.is-placed {
+  opacity: 0.38;
   cursor: default;
-  transform: none;
-  box-shadow: none;
 }
 
-.fullscreen-panel--game .puzzle-piece-button__title {
-  display: block;
-  width: 100%;
-  text-align: center;
-  font-size: 1.05rem;
+.fullscreen-panel--game .puzzle-piece-title {
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.25;
+  color: rgba(71, 48, 29, 0.92);
+  line-height: 1.2;
 }
 
-.fullscreen-panel--game .puzzle-piece-button__thumb {
+.fullscreen-panel--game .puzzle-piece-thumb {
+  width: 88%;
+  aspect-ratio: 1 / 0.82;
   display: grid;
   place-items: center;
-  min-height: 92px;
 }
 
-.fullscreen-panel--game .puzzle-piece-button__thumb img {
+.fullscreen-panel--game .puzzle-piece-thumb img {
+  width: 100%;
+  height: 100%;
   max-width: 100%;
-  max-height: 78px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+  max-height: 100%;
   display: block;
+  object-fit: contain;
+  object-position: center;
 }
 
 @media (max-width: 1180px) {
-  .fullscreen-panel--game .puzzle-board-wrap {
-    min-height: 560px;
+  .fullscreen-panel--game .puzzle-stage {
+    min-height: 640px;
   }
 
-  .fullscreen-panel--game .puzzle-stage {
-    min-height: 532px;
+  .fullscreen-panel--game .puzzle-piece-button {
+    width: 116px;
+    min-width: 116px;
   }
 }
 
 @media (max-width: 860px) {
-  .fullscreen-panel--game .puzzle-bottom-dock {
-    width: calc(100% - 28px);
-    max-width: none;
-  }
-
-  .fullscreen-panel--game .puzzle-piece-row {
-    flex-wrap: wrap;
-    justify-content: center;
+  .fullscreen-panel--game .puzzle-stage {
+    min-height: 520px;
   }
 
   .fullscreen-panel--game .puzzle-piece-button {
-    flex: 0 0 calc(50% - 7px);
-    width: calc(50% - 7px);
-    max-width: 180px;
+    width: 102px;
+    min-width: 102px;
+    padding: 10px 9px;
   }
 }
+
+
 
