@@ -121,10 +121,7 @@ export function renderStructureView() {
         </div>
         <p class="module-note">通过拼合互动，加深对古筝结构与部件的认识。</p>
         <div class="structure-entry-visual" aria-hidden="true">
-          <span class="structure-entry-visual__outline"></span>
-          <span class="structure-entry-visual__piece structure-entry-visual__piece--left"></span>
-          <span class="structure-entry-visual__piece structure-entry-visual__piece--mid"></span>
-          <span class="structure-entry-visual__piece structure-entry-visual__piece--right"></span>
+          <img class="structure-entry-visual__image" src="./assets/images/puzzle-entry-cover.png" alt="" />
         </div>
         <button class="button button--primary structure-game-entry" id="open-structure-game">进入拼合游戏</button>
       </section>

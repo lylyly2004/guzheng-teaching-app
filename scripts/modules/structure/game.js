@@ -10,6 +10,8 @@ const pieceConfigs = {
   qinwei: {
     label: "筝尾",
     image: "assets/images/puzzle-piece-qinwei.png",
+    stageImage: "assets/images/puzzle-stage-qinwei.png",
+    stageFullCanvas: true,
     zoneClassName: "zone-qinwei",
     stageClassName: "stage-piece-qinwei"
   },
@@ -32,24 +34,32 @@ const pieceConfigs = {
   qinxian: {
     label: "琴弦",
     image: "assets/images/puzzle-piece-qinxian.png",
+    stageImage: "assets/images/puzzle-stage-qinxian.png",
+    stageFullCanvas: true,
     zoneClassName: "zone-qinxian",
     stageClassName: "stage-piece-qinxian"
   },
   yanzhu: {
     label: "筝码",
     image: "assets/images/puzzle-piece-yanzhu.png",
+    stageImage: "assets/images/puzzle-stage-yanzhu.png",
+    stageFullCanvas: true,
     zoneClassName: "zone-yanzhu",
     stageClassName: "stage-piece-yanzhu"
   },
   houyueshan: {
     label: "后岳山",
     image: "assets/images/puzzle-piece-houyueshan.png",
+    stageImage: "assets/images/puzzle-stage-houyueshan.png",
+    stageFullCanvas: true,
     zoneClassName: "zone-houyueshan",
     stageClassName: "stage-piece-houyueshan"
   },
   qianyueshan: {
     label: "前岳山",
     image: "assets/images/puzzle-piece-qianyueshan.png",
+    stageImage: "assets/images/puzzle-stage-qianyueshan.png",
+    stageFullCanvas: true,
     zoneClassName: "zone-qianyueshan",
     stageClassName: "stage-piece-qianyueshan"
   }
@@ -78,7 +88,7 @@ function renderZones() {
   return zoneOrder
     .map((key) => {
       const piece = pieceConfigs[key];
-      if (key === "ceban" || key === "mianban" || key === "qintou") {
+      if (key === "ceban" || key === "mianban" || key === "qintou" || key === "qinwei" || key === "qianyueshan" || key === "houyueshan" || key === "yanzhu" || key === "qinxian") {
         return "";
       }
       return `
@@ -119,17 +129,40 @@ export function createStructureGameMarkup() {
                 <div class="puzzle-stage-guide puzzle-stage-guide--qintou" aria-hidden="true">
                   <img src="assets/images/puzzle-guide-qintou.png" alt="">
                 </div>
+                <div class="puzzle-stage-guide puzzle-stage-guide--qinwei" aria-hidden="true">
+                  <img src="assets/images/puzzle-guide-qinwei.png" alt="">
+                </div>
                 <div class="puzzle-stage-guide puzzle-stage-guide--mianban" aria-hidden="true">
                   <img src="assets/images/puzzle-guide-mianban.png" alt="">
                 </div>
                 <div class="puzzle-stage-guide puzzle-stage-guide--ceban" aria-hidden="true">
                   <img src="assets/images/puzzle-guide-ceban.png" alt="">
                 </div>
+                <div class="puzzle-stage-guide puzzle-stage-guide--qianyueshan" aria-hidden="true">
+                  <img src="assets/images/puzzle-guide-qianyueshan.png" alt="">
+                </div>
+                <div class="puzzle-stage-guide puzzle-stage-guide--houyueshan" aria-hidden="true">
+                  <img src="assets/images/puzzle-guide-houyueshan.png" alt="">
+                </div>
+                <div class="puzzle-stage-guide puzzle-stage-guide--yanzhu" aria-hidden="true">
+                  <img src="assets/images/puzzle-guide-yanzhu.png" alt="">
+                </div>
+                <div class="puzzle-stage-guide puzzle-stage-guide--qinxian" aria-hidden="true">
+                  <img src="assets/images/puzzle-guide-qinxian.png" alt="">
+                </div>
                 <div class="puzzle-stage-outline" aria-hidden="true"></div>
                 <div class="puzzle-stage-pieces" aria-hidden="true">
                   ${renderStagePieces()}
                 </div>
+                <div class="puzzle-stage-outline puzzle-stage-outline--yanzhu" data-outline-part="yanzhu" aria-hidden="true"></div>
+                <div class="puzzle-stage-outline puzzle-stage-outline--qinxian" data-outline-part="qinxian" aria-hidden="true"></div>
                 ${renderZones()}
+              </div>
+              <div class="game-complete-dialog" data-game-complete-dialog aria-hidden="true">
+                <div class="game-complete-dialog__card">
+                  <strong>真棒，你已经全部拼合完成！</strong>
+                  <button class="button" type="button" data-game-complete-confirm>关闭</button>
+                </div>
               </div>
             </div>
           </div>
@@ -151,17 +184,44 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
   const pieceButtons = Array.from(root.querySelectorAll(".puzzle-piece-button"));
   const zones = Array.from(root.querySelectorAll(".puzzle-zone"));
   const closeButton = root.querySelector("[data-close-game]");
+  const completeDialog = root.querySelector("[data-game-complete-dialog]");
+  const completeConfirmButton = root.querySelector("[data-game-complete-confirm]");
   const artboard = root.querySelector(".puzzle-stage-artboard");
   const qintouGuide = root.querySelector(".puzzle-stage-guide--qintou");
   const qintouGuideImage = qintouGuide?.querySelector("img");
+  const qinweiGuide = root.querySelector(".puzzle-stage-guide--qinwei");
+  const qinweiGuideImage = qinweiGuide?.querySelector("img");
   const mianbanGuide = root.querySelector(".puzzle-stage-guide--mianban");
   const mianbanGuideImage = mianbanGuide?.querySelector("img");
   const cebanGuide = root.querySelector(".puzzle-stage-guide--ceban");
   const cebanGuideImage = cebanGuide?.querySelector("img");
+  const qianyueshanGuide = root.querySelector(".puzzle-stage-guide--qianyueshan");
+  const qianyueshanGuideImage = qianyueshanGuide?.querySelector("img");
+  const houyueshanGuide = root.querySelector(".puzzle-stage-guide--houyueshan");
+  const houyueshanGuideImage = houyueshanGuide?.querySelector("img");
+  const yanzhuGuide = root.querySelector(".puzzle-stage-guide--yanzhu");
+  const yanzhuGuideImage = yanzhuGuide?.querySelector("img");
+  const qinxianGuide = root.querySelector(".puzzle-stage-guide--qinxian");
+  const qinxianGuideImage = qinxianGuide?.querySelector("img");
   let activePiece = null;
   let qintouHitTest = null;
+  let qinweiHitTest = null;
   let mianbanHitTest = null;
   let cebanHitTest = null;
+  let qianyueshanHitTest = null;
+  let houyueshanHitTest = null;
+  let yanzhuHitTest = null;
+  let qinxianHitTest = null;
+  const snapTolerance = {
+    qintou: 28,
+    qinwei: 28,
+    mianban: 20,
+    ceban: 20,
+    qianyueshan: 30,
+    houyueshan: 30,
+    yanzhu: 28,
+    qinxian: 22
+  };
 
   const getContainedImageRect = (imageElement) => {
     if (!imageElement) {
@@ -194,6 +254,54 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
     return { left, top, width, height };
   };
 
+  const createBufferedHitTest = ({ imageElement, canvas, context, matcher, tolerance = 0 }) => {
+    return (clientX, clientY) => {
+      const containedRect = getContainedImageRect(imageElement);
+      if (!containedRect) {
+        return false;
+      }
+
+      const relativeX = (clientX - containedRect.left) / containedRect.width;
+      const relativeY = (clientY - containedRect.top) / containedRect.height;
+      if (relativeX < 0 || relativeX > 1 || relativeY < 0 || relativeY > 1) {
+        return false;
+      }
+
+      const centerX = Math.max(0, Math.min(canvas.width - 1, Math.round(relativeX * (canvas.width - 1))));
+      const centerY = Math.max(0, Math.min(canvas.height - 1, Math.round(relativeY * (canvas.height - 1))));
+
+      if (tolerance <= 0) {
+        const pixel = context.getImageData(centerX, centerY, 1, 1).data;
+        return matcher(pixel);
+      }
+
+      for (let offsetY = -tolerance; offsetY <= tolerance; offsetY += 1) {
+        const pixelY = centerY + offsetY;
+        if (pixelY < 0 || pixelY >= canvas.height) {
+          continue;
+        }
+
+        for (let offsetX = -tolerance; offsetX <= tolerance; offsetX += 1) {
+          if (offsetX * offsetX + offsetY * offsetY > tolerance * tolerance) {
+            continue;
+          }
+
+          const pixelX = centerX + offsetX;
+          if (pixelX < 0 || pixelX >= canvas.width) {
+            continue;
+          }
+
+          const pixel = context.getImageData(pixelX, pixelY, 1, 1).data;
+          if (matcher(pixel)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    };
+  };
+
   const placePiece = (pieceId, zone) => {
     const button = root.querySelector(`.puzzle-piece-button[data-piece="${pieceId}"]`);
     const stagePiece = root.querySelector(`.puzzle-stage-piece[data-piece="${pieceId}"]`);
@@ -219,13 +327,51 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
       qintouGuide?.classList.add("is-filled");
       qintouGuide?.classList.remove("is-active");
     }
+
+    if (pieceId === "qinwei") {
+      qinweiGuide?.classList.add("is-filled");
+      qinweiGuide?.classList.remove("is-active");
+    }
+
+    if (pieceId === "qianyueshan") {
+      qianyueshanGuide?.classList.add("is-filled");
+      qianyueshanGuide?.classList.remove("is-active");
+    }
+
+    if (pieceId === "houyueshan") {
+      houyueshanGuide?.classList.add("is-filled");
+      houyueshanGuide?.classList.remove("is-active");
+    }
+
+    if (pieceId === "yanzhu") {
+      yanzhuGuide?.classList.add("is-filled");
+      yanzhuGuide?.classList.remove("is-active");
+      root.querySelector('[data-outline-part="yanzhu"]')?.classList.add("is-filled");
+    }
+
+    if (pieceId === "qinxian") {
+      qinxianGuide?.classList.add("is-filled");
+      qinxianGuide?.classList.remove("is-active");
+      root.querySelector('[data-outline-part="qinxian"]')?.classList.add("is-filled");
+    }
+
+    const placedCount = pieceButtons.filter((item) => item.hasAttribute("disabled")).length;
+    if (placedCount === pieceOrder.length) {
+      completeDialog?.classList.add("is-open");
+      completeDialog?.setAttribute("aria-hidden", "false");
+    }
   };
 
   const clearDropState = () => {
     zones.forEach((zone) => zone.classList.remove("is-active"));
     qintouGuide?.classList.remove("is-active");
+    qinweiGuide?.classList.remove("is-active");
     mianbanGuide?.classList.remove("is-active");
     cebanGuide?.classList.remove("is-active");
+    qianyueshanGuide?.classList.remove("is-active");
+    houyueshanGuide?.classList.remove("is-active");
+    yanzhuGuide?.classList.remove("is-active");
+    qinxianGuide?.classList.remove("is-active");
   };
 
   const setupQintouHitTest = () => {
@@ -243,24 +389,37 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
 
     context.drawImage(qintouGuideImage, 0, 0, canvas.width, canvas.height);
 
-    qintouHitTest = (clientX, clientY) => {
-      const containedRect = getContainedImageRect(qintouGuideImage);
-      if (!containedRect) {
-        return false;
-      }
+    qintouHitTest = createBufferedHitTest({
+      imageElement: qintouGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.qintou,
+      matcher: (pixel) => pixel[3] > 180 && pixel[0] > 180 && pixel[1] < 80 && pixel[2] < 80
+    });
+  };
 
-      const relativeX = (clientX - containedRect.left) / containedRect.width;
-      const relativeY = (clientY - containedRect.top) / containedRect.height;
-      if (relativeX < 0 || relativeX > 1 || relativeY < 0 || relativeY > 1) {
-        return false;
-      }
+  const setupQinweiHitTest = () => {
+    if (!qinweiGuideImage || qinweiHitTest) {
+      return;
+    }
 
-      const pixelX = Math.max(0, Math.min(canvas.width - 1, Math.round(relativeX * (canvas.width - 1))));
-      const pixelY = Math.max(0, Math.min(canvas.height - 1, Math.round(relativeY * (canvas.height - 1))));
-      const pixel = context.getImageData(pixelX, pixelY, 1, 1).data;
+    const canvas = document.createElement("canvas");
+    canvas.width = qinweiGuideImage.naturalWidth || 1920;
+    canvas.height = qinweiGuideImage.naturalHeight || 1080;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
 
-      return pixel[3] > 180 && pixel[0] > 180 && pixel[1] < 80 && pixel[2] < 80;
-    };
+    context.drawImage(qinweiGuideImage, 0, 0, canvas.width, canvas.height);
+
+    qinweiHitTest = createBufferedHitTest({
+      imageElement: qinweiGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.qinwei,
+      matcher: (pixel) => pixel[3] > 180
+    });
   };
 
   const setupMianbanHitTest = () => {
@@ -278,24 +437,13 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
 
     context.drawImage(mianbanGuideImage, 0, 0, canvas.width, canvas.height);
 
-    mianbanHitTest = (clientX, clientY) => {
-      const containedRect = getContainedImageRect(mianbanGuideImage);
-      if (!containedRect) {
-        return false;
-      }
-
-      const relativeX = (clientX - containedRect.left) / containedRect.width;
-      const relativeY = (clientY - containedRect.top) / containedRect.height;
-      if (relativeX < 0 || relativeX > 1 || relativeY < 0 || relativeY > 1) {
-        return false;
-      }
-
-      const pixelX = Math.max(0, Math.min(canvas.width - 1, Math.round(relativeX * (canvas.width - 1))));
-      const pixelY = Math.max(0, Math.min(canvas.height - 1, Math.round(relativeY * (canvas.height - 1))));
-      const pixel = context.getImageData(pixelX, pixelY, 1, 1).data;
-
-      return pixel[3] > 180 && pixel[2] > 180 && pixel[0] < 90 && pixel[1] < 90;
-    };
+    mianbanHitTest = createBufferedHitTest({
+      imageElement: mianbanGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.mianban,
+      matcher: (pixel) => pixel[3] > 180 && pixel[2] > 180 && pixel[0] < 90 && pixel[1] < 90
+    });
   };
 
   const setupCebanHitTest = () => {
@@ -313,24 +461,109 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
 
     context.drawImage(cebanGuideImage, 0, 0, canvas.width, canvas.height);
 
-    cebanHitTest = (clientX, clientY) => {
-      const containedRect = getContainedImageRect(cebanGuideImage);
-      if (!containedRect) {
-        return false;
-      }
+    cebanHitTest = createBufferedHitTest({
+      imageElement: cebanGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.ceban,
+      matcher: (pixel) => pixel[3] > 180 && pixel[0] > 200 && pixel[1] > 60 && pixel[1] < 170 && pixel[2] < 80
+    });
+  };
 
-      const relativeX = (clientX - containedRect.left) / containedRect.width;
-      const relativeY = (clientY - containedRect.top) / containedRect.height;
-      if (relativeX < 0 || relativeX > 1 || relativeY < 0 || relativeY > 1) {
-        return false;
-      }
+  const setupQianyueshanHitTest = () => {
+    if (!qianyueshanGuideImage || qianyueshanHitTest) {
+      return;
+    }
 
-      const pixelX = Math.max(0, Math.min(canvas.width - 1, Math.round(relativeX * (canvas.width - 1))));
-      const pixelY = Math.max(0, Math.min(canvas.height - 1, Math.round(relativeY * (canvas.height - 1))));
-      const pixel = context.getImageData(pixelX, pixelY, 1, 1).data;
+    const canvas = document.createElement("canvas");
+    canvas.width = qianyueshanGuideImage.naturalWidth || 1920;
+    canvas.height = qianyueshanGuideImage.naturalHeight || 1080;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
 
-      return pixel[3] > 180 && pixel[0] > 200 && pixel[1] > 60 && pixel[1] < 170 && pixel[2] < 80;
-    };
+    context.drawImage(qianyueshanGuideImage, 0, 0, canvas.width, canvas.height);
+
+    qianyueshanHitTest = createBufferedHitTest({
+      imageElement: qianyueshanGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.qianyueshan,
+      matcher: (pixel) => pixel[3] > 180
+    });
+  };
+
+  const setupHouyueshanHitTest = () => {
+    if (!houyueshanGuideImage || houyueshanHitTest) {
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = houyueshanGuideImage.naturalWidth || 1920;
+    canvas.height = houyueshanGuideImage.naturalHeight || 1080;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
+
+    context.drawImage(houyueshanGuideImage, 0, 0, canvas.width, canvas.height);
+
+    houyueshanHitTest = createBufferedHitTest({
+      imageElement: houyueshanGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.houyueshan,
+      matcher: (pixel) => pixel[3] > 180
+    });
+  };
+
+  const setupYanzhuHitTest = () => {
+    if (!yanzhuGuideImage || yanzhuHitTest) {
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = yanzhuGuideImage.naturalWidth || 1920;
+    canvas.height = yanzhuGuideImage.naturalHeight || 1080;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
+
+    context.drawImage(yanzhuGuideImage, 0, 0, canvas.width, canvas.height);
+
+    yanzhuHitTest = createBufferedHitTest({
+      imageElement: yanzhuGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.yanzhu,
+      matcher: (pixel) => pixel[3] > 180
+    });
+  };
+
+  const setupQinxianHitTest = () => {
+    if (!qinxianGuideImage || qinxianHitTest) {
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = qinxianGuideImage.naturalWidth || 1920;
+    canvas.height = qinxianGuideImage.naturalHeight || 1080;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return;
+    }
+
+    context.drawImage(qinxianGuideImage, 0, 0, canvas.width, canvas.height);
+
+    qinxianHitTest = createBufferedHitTest({
+      imageElement: qinxianGuideImage,
+      canvas,
+      context,
+      tolerance: snapTolerance.qinxian,
+      matcher: (pixel) => pixel[3] > 180
+    });
   };
 
   if (cebanGuideImage?.complete) {
@@ -345,10 +578,40 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
     qintouGuideImage?.addEventListener("load", setupQintouHitTest, { once: true });
   }
 
+  if (qinweiGuideImage?.complete) {
+    setupQinweiHitTest();
+  } else {
+    qinweiGuideImage?.addEventListener("load", setupQinweiHitTest, { once: true });
+  }
+
   if (mianbanGuideImage?.complete) {
     setupMianbanHitTest();
   } else {
     mianbanGuideImage?.addEventListener("load", setupMianbanHitTest, { once: true });
+  }
+
+  if (qianyueshanGuideImage?.complete) {
+    setupQianyueshanHitTest();
+  } else {
+    qianyueshanGuideImage?.addEventListener("load", setupQianyueshanHitTest, { once: true });
+  }
+
+  if (houyueshanGuideImage?.complete) {
+    setupHouyueshanHitTest();
+  } else {
+    houyueshanGuideImage?.addEventListener("load", setupHouyueshanHitTest, { once: true });
+  }
+
+  if (yanzhuGuideImage?.complete) {
+    setupYanzhuHitTest();
+  } else {
+    yanzhuGuideImage?.addEventListener("load", setupYanzhuHitTest, { once: true });
+  }
+
+  if (qinxianGuideImage?.complete) {
+    setupQinxianHitTest();
+  } else {
+    qinxianGuideImage?.addEventListener("load", setupQinxianHitTest, { once: true });
   }
 
   pieceButtons.forEach((button) => {
@@ -414,6 +677,20 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
       }
     }
 
+    if (hoveredPiece === "qinwei") {
+      const qinweiButton = root.querySelector('.puzzle-piece-button[data-piece="qinwei"]');
+      if (qinweiButton?.hasAttribute("disabled")) {
+        return;
+      }
+
+      if (!qinweiHitTest?.(event.clientX, event.clientY)) {
+        qinweiGuide?.classList.remove("is-active");
+      } else {
+        event.preventDefault();
+        qinweiGuide?.classList.add("is-active");
+      }
+    }
+
     if (hoveredPiece === "mianban") {
       const mianbanButton = root.querySelector('.puzzle-piece-button[data-piece="mianban"]');
       if (mianbanButton?.hasAttribute("disabled")) {
@@ -425,6 +702,62 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
       } else {
         event.preventDefault();
         mianbanGuide?.classList.add("is-active");
+      }
+    }
+
+    if (hoveredPiece === "qianyueshan") {
+      const qianyueshanButton = root.querySelector('.puzzle-piece-button[data-piece="qianyueshan"]');
+      if (qianyueshanButton?.hasAttribute("disabled")) {
+        return;
+      }
+
+      if (!qianyueshanHitTest?.(event.clientX, event.clientY)) {
+        qianyueshanGuide?.classList.remove("is-active");
+      } else {
+        event.preventDefault();
+        qianyueshanGuide?.classList.add("is-active");
+      }
+    }
+
+    if (hoveredPiece === "houyueshan") {
+      const houyueshanButton = root.querySelector('.puzzle-piece-button[data-piece="houyueshan"]');
+      if (houyueshanButton?.hasAttribute("disabled")) {
+        return;
+      }
+
+      if (!houyueshanHitTest?.(event.clientX, event.clientY)) {
+        houyueshanGuide?.classList.remove("is-active");
+      } else {
+        event.preventDefault();
+        houyueshanGuide?.classList.add("is-active");
+      }
+    }
+
+    if (hoveredPiece === "yanzhu") {
+      const yanzhuButton = root.querySelector('.puzzle-piece-button[data-piece="yanzhu"]');
+      if (yanzhuButton?.hasAttribute("disabled")) {
+        return;
+      }
+
+      if (!yanzhuHitTest?.(event.clientX, event.clientY)) {
+        yanzhuGuide?.classList.remove("is-active");
+      } else {
+        event.preventDefault();
+        yanzhuGuide?.classList.add("is-active");
+      }
+    }
+
+    if (hoveredPiece === "qinxian") {
+      const qinxianButton = root.querySelector('.puzzle-piece-button[data-piece="qinxian"]');
+      if (qinxianButton?.hasAttribute("disabled")) {
+        return;
+      }
+
+      if (!qinxianHitTest?.(event.clientX, event.clientY)) {
+        qinxianGuide?.classList.remove("is-active");
+      } else {
+        event.preventDefault();
+        qinxianGuide?.classList.add("is-active");
       }
     }
 
@@ -460,6 +793,18 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
       return;
     }
 
+    if (droppedPiece === "qinwei") {
+      event.preventDefault();
+      qinweiGuide?.classList.remove("is-active");
+      if (!qinweiHitTest?.(event.clientX, event.clientY)) {
+        return;
+      }
+
+      placePiece("qinwei");
+      activePiece = null;
+      return;
+    }
+
     if (droppedPiece === "mianban") {
       event.preventDefault();
       mianbanGuide?.classList.remove("is-active");
@@ -468,6 +813,54 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
       }
 
       placePiece("mianban");
+      activePiece = null;
+      return;
+    }
+
+    if (droppedPiece === "qianyueshan") {
+      event.preventDefault();
+      qianyueshanGuide?.classList.remove("is-active");
+      if (!qianyueshanHitTest?.(event.clientX, event.clientY)) {
+        return;
+      }
+
+      placePiece("qianyueshan");
+      activePiece = null;
+      return;
+    }
+
+    if (droppedPiece === "houyueshan") {
+      event.preventDefault();
+      houyueshanGuide?.classList.remove("is-active");
+      if (!houyueshanHitTest?.(event.clientX, event.clientY)) {
+        return;
+      }
+
+      placePiece("houyueshan");
+      activePiece = null;
+      return;
+    }
+
+    if (droppedPiece === "yanzhu") {
+      event.preventDefault();
+      yanzhuGuide?.classList.remove("is-active");
+      if (!yanzhuHitTest?.(event.clientX, event.clientY)) {
+        return;
+      }
+
+      placePiece("yanzhu");
+      activePiece = null;
+      return;
+    }
+
+    if (droppedPiece === "qinxian") {
+      event.preventDefault();
+      qinxianGuide?.classList.remove("is-active");
+      if (!qinxianHitTest?.(event.clientX, event.clientY)) {
+        return;
+      }
+
+      placePiece("qinxian");
       activePiece = null;
       return;
     }
@@ -488,5 +881,10 @@ export function bindStructureGame({ root, closeOverlay } = {}) {
 
   closeButton?.addEventListener("click", () => {
     closeOverlay?.();
+  });
+
+  completeConfirmButton?.addEventListener("click", () => {
+    completeDialog?.classList.remove("is-open");
+    completeDialog?.setAttribute("aria-hidden", "true");
   });
 }
