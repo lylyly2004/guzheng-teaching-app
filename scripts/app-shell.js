@@ -1,4 +1,4 @@
-import { renderSidebar } from "./components/sidebar.js";
+﻿import { renderSidebar } from "./components/sidebar.js";
 import { defaultModuleId, moduleList, modulesById } from "./modules/index.js";
 
 const AUTH_KEY = "guzheng-app-auth";
@@ -43,6 +43,11 @@ function setActiveModule(moduleId) {
     return;
   }
 
+  const previousModule = getActiveModule();
+  if (state.activeModuleId !== moduleId && typeof previousModule?.onDeactivate === "function") {
+    previousModule.onDeactivate(state);
+  }
+
   state.activeModuleId = moduleId;
   renderApp();
 }
@@ -76,27 +81,43 @@ function openOverlay(markup, binder) {
 
 function updateHeader() {
   const activeModule = getActiveModule();
-  const header = activeModule.header || {};
+  const header = typeof activeModule.getHeader === "function" ? activeModule.getHeader(state) : activeModule.header || {};
   const eyebrow = header.eyebrow || "";
   const summary = header.summary || activeModule.summary || "";
 
   headerEyebrow.textContent = eyebrow;
   headerEyebrow.hidden = !eyebrow;
 
-  headerTitle.textContent = header.title || activeModule.title;
+  headerTitle.textContent = Object.prototype.hasOwnProperty.call(header, "title") ? header.title : activeModule.title;
 
   headerSummary.textContent = summary;
   headerSummary.hidden = !summary;
 
+  const headerBackAction =
+    typeof activeModule.getHeaderBackAction === "function"
+      ? activeModule.getHeaderBackAction(state)
+      : { label: "返回上一页" };
+
   headerActions.innerHTML =
     state.activeModuleId === defaultModuleId
       ? ""
-      : '<button class="button button--ghost" id="header-back-dashboard">返回上一级</button>';
+      : `<button class="button button--ghost" id="header-back-dashboard">${headerBackAction?.label || "返回上一页"}</button>`;
 
   const backButton = headerActions.querySelector("#header-back-dashboard");
   if (backButton) {
     backButton.addEventListener("click", () => {
-      setActiveModule(defaultModuleId);
+      const handled =
+        typeof activeModule.handleHeaderBackAction === "function"
+          ? activeModule.handleHeaderBackAction({
+              state,
+              switchModule: setActiveModule,
+              rerender: renderApp,
+            })
+          : false;
+
+      if (!handled) {
+        setActiveModule(defaultModuleId);
+      }
     });
   }
 
@@ -108,6 +129,19 @@ function updateHeader() {
       closeOverlay,
       switchModule: setActiveModule,
     });
+  }
+
+  if (returnLoginButton) {
+    const globalAction =
+      typeof activeModule.getGlobalAction === "function"
+        ? activeModule.getGlobalAction(state)
+        : {
+            label: "返回登录页",
+            mode: "login",
+          };
+
+    returnLoginButton.textContent = globalAction?.label || "返回登录页";
+    returnLoginButton.dataset.mode = globalAction?.mode || "login";
   }
 }
 
@@ -139,6 +173,9 @@ function renderContent() {
 function renderApp() {
   if (workspaceMain) {
     workspaceMain.dataset.activeModule = state.activeModuleId;
+    const activeModule = getActiveModule();
+    const moduleView = typeof activeModule.getViewState === "function" ? activeModule.getViewState(state) : "";
+    workspaceMain.dataset.moduleView = moduleView || "";
   }
   updateSidebar();
   updateHeader();
@@ -156,7 +193,20 @@ overlayRoot.addEventListener("click", (event) => {
 });
 
 returnLoginButton?.addEventListener("click", () => {
-  redirectToLogin();
+  const activeModule = getActiveModule();
+  const handled =
+    typeof activeModule.handleGlobalAction === "function"
+      ? activeModule.handleGlobalAction({
+          state,
+          switchModule: setActiveModule,
+          rerender: renderApp,
+          redirectToLogin,
+        })
+      : false;
+
+  if (!handled) {
+    redirectToLogin();
+  }
 });
 
 renderApp();

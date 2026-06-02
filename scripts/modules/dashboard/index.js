@@ -31,7 +31,7 @@ export const dashboardModule = {
   header: {
     eyebrow: "课堂工作台",
     title: "教学主控台",
-    summary: "",
+    summary: "从左侧选择教学模块，在右侧完成讲解与互动操作。",
   },
   render() {
     return `
@@ -78,7 +78,7 @@ export const dashboardModule = {
                   <h4>古筝结构认知</h4>
                 </div>
               </div>
-              <p>用于课堂开场、整琴认识和互动引入，适合作为当前默认主讲内容。</p>
+              <p>用于课堂开场、整机认识和互动引入，适合作为当前默认主讲内容。</p>
               <div class="action-row">
                 <button class="button button--primary dashboard-enter" data-module-id="structure">开始讲解</button>
               </div>
